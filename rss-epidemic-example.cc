@@ -59,7 +59,7 @@ int main (int argc, char *argv[])
   // General parameters
   std::string mobility_model = "RandomWaypoint";  // Grid or RandomWaypoint
   uint32_t nWifis = 10;
-  double txpDistance = 120.0;
+  double txpDistance = 15.0;
   double nodeSpeed = 20.0;
   bool app_logging = true;
   NodeContainer nodeContainer;
@@ -68,13 +68,13 @@ int main (int argc, char *argv[])
 
   // Epidemic parameters
   uint32_t epidemicHopCount = 10;
-  uint32_t epidemicQueueLength = 50;
-  Time epidemicQueueEntryExpireTime = Seconds (100);
+  uint32_t epidemicQueueLength = 2000;
+  Time epidemicQueueEntryExpireTime = Seconds (3600);
   Time epidemicBeaconInterval = Seconds (1);
 
   // Application parameters
-  std::string rate = "0.512kbps";
-  uint32_t packetSize = 128;
+  std::string rate = "512kbps";
+  uint32_t packetSize = 1024;
   double appTotalTime = 120.0;
   double appDataStart = 10.0;
   double appDataEnd = 35;
