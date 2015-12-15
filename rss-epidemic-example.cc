@@ -60,25 +60,25 @@ int main (int argc, char *argv[])
   std::string mobility_model = "RandomWaypoint";  // Grid or RandomWaypoint
   uint32_t nWifis = 10;
   double txpDistance = 120.0;
-  double nodeSpeed = 50.0;
+  double nodeSpeed = 20.0;
   bool app_logging = true;
   NodeContainer nodeContainer;
   NetDeviceContainer devices;
 
 
   // Epidemic parameters
-  uint32_t epidemicHopCount = 50;
+  uint32_t epidemicHopCount = 10;
   uint32_t epidemicQueueLength = 50;
   Time epidemicQueueEntryExpireTime = Seconds (100);
   Time epidemicBeaconInterval = Seconds (1);
 
   // Application parameters
   std::string rate = "0.512kbps";
-  uint32_t packetSize = 64;
-  double appTotalTime = 100.0;
+  uint32_t packetSize = 128;
+  double appTotalTime = 120.0;
   double appDataStart = 10.0;
-  double appDataEnd = 15;
-  uint32_t source_num = 0;
+  double appDataEnd = 35;
+  uint32_t source_num = 1;
   uint32_t sink_num = 9;
 
   /*
@@ -272,4 +272,3 @@ int main (int argc, char *argv[])
   Simulator::Destroy ();
   return 0;
 }
-
