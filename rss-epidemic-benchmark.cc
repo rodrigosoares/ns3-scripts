@@ -136,6 +136,33 @@ int main (int argc, char *argv[])
    *       Mobility model Setup
    *  The parameters for mobility model matches the epidemic routing paper.
    */
+
+  // Mobility model: Random Waypoint
+
+  // MobilityHelper mobility;
+  // ObjectFactory pos;
+  // pos.SetTypeId("ns3::RandomRectanglePositionAllocator");
+  // pos.Set("X", StringValue("ns3::UniformRandomVariable[Min=0.0|Max=300.0]"));
+  // pos.Set("Y", StringValue("ns3::UniformRandomVariable[Min=0.0|Max=1500.0]"));
+  // Ptr<PositionAllocator> taPositionAlloc = pos.Create() -> GetObject<PositionAllocator>();
+  //
+  // std::ostringstream speedUniformRandomVariableStream;
+  // speedUniformRandomVariableStream << "ns3::UniformRandomVariable[Min=0.01|Max="
+  //                                  << nodeSpeed
+  //                                  << "]";
+  //
+  // std::ostringstream pauseUniformRandomVariableStream;
+  // pauseUniformRandomVariableStream << "ns3::UniformRandomVariable[Min=10.0|Max=20.0]";
+  //
+  // mobility.SetMobilityModel ("ns3::RandomWaypointMobilityModel",
+  //                                  "Speed", StringValue (speedUniformRandomVariableStream.str ()),
+  //                                  "Pause", StringValue (pauseUniformRandomVariableStream.str ()),
+  //                                  "PositionAllocator", PointerValue (taPositionAlloc)
+  //                                );
+  // mobility.Install(nodeContainer);
+
+  // Mobility model: Steady State Random Waypoint
+  
   MobilityHelper mobility;
   ObjectFactory pos;
   mobility.SetPositionAllocator ("ns3::RandomRectanglePositionAllocator",
@@ -234,11 +261,12 @@ int main (int argc, char *argv[])
         }
     }
 
-
+  // PcapHelper pcapHelper;
+  // Ptr<PcapFileWrapper> file = pcapHelper.CreateFile ("rss-epidemic-benchmark.pcap", std::ios::out, PcapHelper::DLT_PPP);
+  // devices.Get (1)->TraceConnectWithoutContext ("PhyRxDrop", MakeBoundCallback (&RxDrop, file));
 
   Simulator::Stop (Seconds (TotalTime));
   Simulator::Run ();
   Simulator::Destroy ();
   return 0;
 }
-
