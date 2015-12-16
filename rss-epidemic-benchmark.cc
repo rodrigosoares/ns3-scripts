@@ -77,6 +77,7 @@ int main (int argc, char *argv[])
   Time queueEntryExpireTime = Seconds (1000);
   Time beaconInterval = Seconds (5);
 
+  SeedManager::SetSeed(1);
 
   CommandLine cmd;
   cmd.Usage ("Benchmark example shows epidemic routing scenario presented "
@@ -162,7 +163,7 @@ int main (int argc, char *argv[])
   // mobility.Install(nodeContainer);
 
   // Mobility model: Steady State Random Waypoint
-  
+
   MobilityHelper mobility;
   ObjectFactory pos;
   mobility.SetPositionAllocator ("ns3::RandomRectanglePositionAllocator",
