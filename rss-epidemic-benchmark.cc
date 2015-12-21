@@ -234,10 +234,6 @@ int main (int argc, char *argv[])
         }
     }
 
-  // PcapHelper pcapHelper;
-  // Ptr<PcapFileWrapper> file = pcapHelper.CreateFile("rss-epidemic.pcap", std::ios::out, PcapHelper::DLT_PPP);
-  // devices.Get(1)->TraceConnectWithoutContext("PhyRxDrop", MakeBoundCallback (&RxDrop, file));
-
   wifiPhy.EnablePcapAll("rss-epidemic");
 
   Simulator::Stop (Seconds (TotalTime));
