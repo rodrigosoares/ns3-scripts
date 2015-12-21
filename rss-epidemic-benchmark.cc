@@ -60,12 +60,12 @@ int main (int argc, char *argv[]) {
   uint32_t nSrcSnk = 45;
   NodeContainer nodeContainer;
   NetDeviceContainer devices;
-  double txpDistance = 250.0;
+  double txpDistance = 100.0;
   double nodeSpeed = 20.0;
   bool appLogging = true;
 
   // Application parameters
-  double TotalTime = 200000.0;
+  double TotalTime = 10000.0;
   double dataStart = 10.0;
   double dataEnd = 14.0;
   uint32_t packetSize = 1024;
@@ -73,8 +73,8 @@ int main (int argc, char *argv[]) {
   // Epidemic routing parameters
   uint32_t hopCount = 10;
   uint32_t queueLength = 2000;
-  Time queueEntryExpireTime = Seconds (TotalTime);
-  Time beaconInterval = Seconds (5000);
+  Time queueEntryExpireTime = Seconds (10000);
+  Time beaconInterval = Seconds (5);
 
   // Set seed for random mobility.
   SeedManager::SetSeed(1);
