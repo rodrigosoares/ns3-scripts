@@ -27,7 +27,6 @@
  * the ITTC at The University of Kansas.
  */
 
-
 #include "ns3/core-module.h"
 #include "ns3/network-module.h"
 #include "ns3/applications-module.h"
@@ -55,14 +54,14 @@ in the paper Mohammed Alenazi, Yufei Cheng, Dongsheng Zhang, and James Sterbenz,
 */
 
 
-int main (int argc, char *argv[])
-{
+int main (int argc, char *argv[]) {
   // General parameters
   uint32_t nWifis = 50;
+  uint32_t nSrcSnk = 45;
   NodeContainer nodeContainer;
   NetDeviceContainer devices;
-  double txpDistance = 50.0;
-  double nodeSpeed = 10.0;
+  double txpDistance = 100.0;
+  double nodeSpeed = 20.0;
   bool appLogging = true;
 
   // Application parameters
@@ -72,11 +71,12 @@ int main (int argc, char *argv[])
   uint32_t packetSize = 1024;
 
   // Epidemic routing parameters
-  uint32_t hopCount = 50;
-  uint32_t queueLength = 200;
-  Time queueEntryExpireTime = Seconds (1000);
-  Time beaconInterval = Seconds (5);
+  uint32_t hopCount = 10;
+  uint32_t queueLength = 2000;
+  Time queueEntryExpireTime = Seconds (200000);
+  Time beaconInterval = Seconds (5000);
 
+  // Set seed for random mobility.
   SeedManager::SetSeed(1);
 
   CommandLine cmd;
@@ -88,8 +88,7 @@ int main (int argc, char *argv[])
              "the transmission are from 10 m to 250 m while the default is set to "
              "50 m.\n");
   cmd.AddValue ("nWifis", "Number of \"extra\" Wifi nodes/devices", nWifis);
-  cmd.AddValue ("appLogging", "Tell echo applications to log if true",
-                appLogging);
+  cmd.AddValue ("appLogging", "Tell echo applications to log if true", appLogging);
   cmd.AddValue ("nodeSpeed", "Node speed in RandomWayPoint model", nodeSpeed);
   cmd.AddValue ("packetSize", "The packet size", packetSize);
   cmd.AddValue ("txpDistance", "Specify node's transmit range", txpDistance);
@@ -98,9 +97,7 @@ int main (int argc, char *argv[])
   cmd.AddValue ("queueEntryExpireTime", "Specify queue Entry Expire Time",
                 queueEntryExpireTime);
   cmd.AddValue ("beaconInterval", "Specify beaconInterval", beaconInterval);
-
   cmd.Parse (argc, argv);
-
 
   std::cout << "Number of wifi nodes: " << nWifis << std::endl;
   std::cout << "Node speed: " << nodeSpeed << " m/s" << std::endl;
@@ -108,36 +105,22 @@ int main (int argc, char *argv[])
   std::cout << "Transmission distance: " << txpDistance << " m" << std::endl;
   std::cout << "Hop count: " << hopCount << std::endl;
   std::cout << "Queue length: " << queueLength << " packets" << std::endl;
-  std::cout << "Queue entry expire time: " << queueEntryExpireTime.GetSeconds
-    () << " s" << std::endl;
-  std::cout << "Beacon interval: " << beaconInterval.GetSeconds () << " s" <<
-    std::endl;
+  std::cout << "Queue entry expire time: " << queueEntryExpireTime.GetSeconds () << " s" << std::endl;
+  std::cout << "Beacon interval: " << beaconInterval.GetSeconds () << " s" << std::endl;
 
-
-
-  /*
-   *       Enabling OnOffApplication and PacketSink logging
-   * */
-  if (appLogging)
-    {
-      LogComponentEnable ("OnOffApplication", LOG_LEVEL_INFO);
-      LogComponentEnable ("PacketSink", LOG_LEVEL_INFO);
-      LogComponentEnableAll (LOG_PREFIX_TIME);
-      LogComponentEnableAll (LOG_PREFIX_NODE);
-      LogComponentEnableAll (LOG_PREFIX_FUNC);
-    }
-
-
-
+  // Enabling OnOffApplication and PacketSink logging
+  if (appLogging) {
+    LogComponentEnable ("OnOffApplication", LOG_LEVEL_INFO);
+    LogComponentEnable ("PacketSink", LOG_LEVEL_INFO);
+    LogComponentEnableAll (LOG_PREFIX_TIME);
+    LogComponentEnableAll (LOG_PREFIX_NODE);
+    LogComponentEnableAll (LOG_PREFIX_FUNC);
+  }
 
   nodeContainer.Create (nWifis);
 
-
-  /*
-   *       Mobility model Setup
-   *  The parameters for mobility model matches the epidemic routing paper.
-   */
-
+  // Mobility model Setup
+  // The parameters for mobility model matches the epidemic routing paper.
   MobilityHelper mobility;
   ObjectFactory pos;
   mobility.SetPositionAllocator ("ns3::RandomRectanglePositionAllocator",
@@ -156,15 +139,11 @@ int main (int argc, char *argv[])
                              );
   mobility.Install (nodeContainer);
 
-  /*
-   *       Physical and link Layers Setup
-   */
-
+  // Physical and Link Layers Setup
   NqosWifiMacHelper wifiMac = NqosWifiMacHelper::Default ();
   wifiMac.SetType ("ns3::AdhocWifiMac");
   YansWifiPhyHelper wifiPhy = YansWifiPhyHelper::Default ();
   YansWifiChannelHelper wifiChannel = YansWifiChannelHelper::Default ();
-
   wifiChannel.AddPropagationLoss ("ns3::RangePropagationLossModel",
                                   "MaxRange", DoubleValue (txpDistance));
   wifiPhy.SetChannel (wifiChannel.Create ());
@@ -174,19 +153,14 @@ int main (int argc, char *argv[])
                                 "RtsCtsThreshold", UintegerValue (0));
   devices = wifi.Install (wifiPhy, wifiMac, nodeContainer);
 
-
-  /*
-   *       Epidemic Routing Setup
-   * */
+  // Epidemic Routing Setup
   EpidemicHelper epidemic;
   epidemic.Set ("HopCount", UintegerValue (hopCount));
   epidemic.Set ("QueueLength", UintegerValue (queueLength));
   epidemic.Set ("QueueEntryExpireTime", TimeValue (queueEntryExpireTime));
   epidemic.Set ("BeaconInterval", TimeValue (beaconInterval));
 
-  /*
-   *       Internet Stack Setup
-   * */
+  // Internet Stack Setup
   Ipv4ListRoutingHelper list;
   InternetStackHelper internet;
   internet.SetRoutingHelper (epidemic);
@@ -195,45 +169,30 @@ int main (int argc, char *argv[])
   ipv4.SetBase ("10.1.1.0", "255.255.255.0");
   Ipv4InterfaceContainer interfaces = ipv4.Assign (devices);
 
-
-  /*
-   * Application Setup
-   * */
-
-
+  // Application Setup
   // Sink or server setup
-  for (uint32_t i = 0; i < 45; ++i)
-    {
-      PacketSinkHelper sink ("ns3::UdpSocketFactory",
-                             InetSocketAddress (Ipv4Address::GetAny (), 80));
-      ApplicationContainer apps_sink = sink.Install (nodeContainer.Get (i));
-      apps_sink.Start (Seconds (0.0));
-      apps_sink.Stop (Seconds (TotalTime));
-    }
-
-
+  for (uint32_t i = 0; i < nSrcSnk; ++i) {
+    PacketSinkHelper sink ("ns3::UdpSocketFactory", InetSocketAddress (Ipv4Address::GetAny (), 80));
+    ApplicationContainer apps_sink = sink.Install (nodeContainer.Get (i));
+    apps_sink.Start (Seconds (0.0));
+    apps_sink.Stop (Seconds (TotalTime));
+  }
 
   // Client setup
-  for (uint32_t source = 0; source < 45; ++source)
-    {
-      for (uint32_t sink = 0; sink < 45; ++sink)
-        {
-          if (sink != source)
-            {
-              OnOffHelper onoff1 ("ns3::UdpSocketFactory",
-                                  Address (InetSocketAddress
-                                             (interfaces.GetAddress (sink), 80)));
-              onoff1.SetConstantRate (DataRate ("1024B/s"));
-              onoff1.SetAttribute ("PacketSize", UintegerValue (packetSize));
-              ApplicationContainer apps1 = onoff1.Install (
-                  nodeContainer.Get (source));
-              apps1.Start (Seconds (dataStart));
-              apps1.Stop (Seconds (dataEnd));
-            }
-
-        }
+  for (uint32_t source = 0; source < nSrcSnk; ++source) {
+    for (uint32_t sink = 0; sink < nSrcSnk; ++sink) {
+      if (sink != source) {
+        OnOffHelper onoff1 ("ns3::UdpSocketFactory", Address (InetSocketAddress (interfaces.GetAddress (sink), 80)));
+        onoff1.SetConstantRate (DataRate ("1024B/s"));
+        onoff1.SetAttribute ("PacketSize", UintegerValue (packetSize));
+        ApplicationContainer apps1 = onoff1.Install (nodeContainer.Get (source));
+        apps1.Start (Seconds (dataStart));
+        apps1.Stop (Seconds (dataEnd));
+      }
     }
+  }
 
+  // Enable Packet Capture for Data Exportation.
   wifiPhy.EnablePcapAll("rss-epidemic");
 
   Simulator::Stop (Seconds (TotalTime));
