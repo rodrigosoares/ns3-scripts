@@ -193,7 +193,10 @@ int main (int argc, char *argv[]) {
   }
 
   // Enable Packet Capture for Data Exportation.
-  wifiPhy.EnablePcapAll("rss-epidemic");
+  // wifiPhy.EnablePcapAll("rss-epidemic");
+
+  AsciiTraceHelper ascii;
+  wifiPhy.EnableAsciiAll(ascii.CreateFileStream("rss-benchmark.trace"));
 
   Simulator::Stop (Seconds (TotalTime));
   Simulator::Run ();
