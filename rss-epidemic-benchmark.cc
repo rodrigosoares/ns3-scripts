@@ -34,6 +34,7 @@
 #include "ns3/wifi-module.h"
 #include "ns3/internet-module.h"
 #include <iostream>
+#include <sstream>
 #include "ns3/epidemic-helper.h"
 
 using namespace ns3;
@@ -65,7 +66,7 @@ int main (int argc, char *argv[]) {
   bool appLogging = true;
 
   // Application parameters
-  double TotalTime = 10000.0;
+  double TotalTime = 3000.0;
   double dataStart = 10.0;
   double dataEnd = 14.0;
   uint32_t packetSize = 1024;
@@ -73,11 +74,12 @@ int main (int argc, char *argv[]) {
   // Epidemic routing parameters
   uint32_t hopCount = 10;
   uint32_t queueLength = 2000;
-  Time queueEntryExpireTime = Seconds (10000);
+  Time queueEntryExpireTime = Seconds (3000);
   Time beaconInterval = Seconds (5);
 
   // Set seed for random mobility.
-  SeedManager::SetSeed(1);
+  RngSeedManager::SetSeed(1);
+  RngSeedManager::SetRun(1);
 
   CommandLine cmd;
   cmd.Usage ("Benchmark example shows epidemic routing scenario presented "
@@ -192,11 +194,14 @@ int main (int argc, char *argv[]) {
     }
   }
 
-  // Enable Packet Capture for Data Exportation.
-  // wifiPhy.EnablePcapAll("rss-epidemic");
-
+  // Trace file setup
+  uint32_t run = RngSeedManager::GetRun();
+  std::string fileName;
+  std::stringstream sstm;
+  sstm << "rss-benchmark-run-" << run << ".trace";
+  fileName = sstm.str();
   AsciiTraceHelper ascii;
-  wifiPhy.EnableAsciiAll(ascii.CreateFileStream("rss-benchmark.trace"));
+  wifiPhy.EnableAsciiAll(ascii.CreateFileStream(fileName));
 
   Simulator::Stop (Seconds (TotalTime));
   Simulator::Run ();
