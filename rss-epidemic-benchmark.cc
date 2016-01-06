@@ -56,8 +56,8 @@ in the paper Mohammed Alenazi, Yufei Cheng, Dongsheng Zhang, and James Sterbenz,
 
 int main (int argc, char *argv[]) {
   // General parameters
-  uint32_t nWifis = 50;
-  uint32_t nSrcSnk = 45;
+  uint32_t nWifis = 15;
+  uint32_t nSrcSnk = 10;
   NodeContainer nodeContainer;
   NetDeviceContainer devices;
   double txpDistance = 100.0;
