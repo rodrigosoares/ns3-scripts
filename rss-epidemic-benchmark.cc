@@ -90,6 +90,7 @@ int main (int argc, char *argv[]) {
              "the transmission are from 10 m to 250 m while the default is set to "
              "50 m.\n");
   cmd.AddValue ("nWifis", "Number of \"extra\" Wifi nodes/devices", nWifis);
+  cmd.AddValue ("nSrcSnk", "Number of source and sink nodes/devices", nSrcSnk);
   cmd.AddValue ("appLogging", "Tell echo applications to log if true", appLogging);
   cmd.AddValue ("nodeSpeed", "Node speed in RandomWayPoint model", nodeSpeed);
   cmd.AddValue ("packetSize", "The packet size", packetSize);
@@ -99,9 +100,11 @@ int main (int argc, char *argv[]) {
   cmd.AddValue ("queueEntryExpireTime", "Specify queue Entry Expire Time",
                 queueEntryExpireTime);
   cmd.AddValue ("beaconInterval", "Specify beaconInterval", beaconInterval);
+  cmd.AddValue ("TotalTime", "Total simulated time", TotalTime);
   cmd.Parse (argc, argv);
 
   std::cout << "Number of wifi nodes: " << nWifis << std::endl;
+  std::cout << "Number of source and sink nodes: " << nSrcSnk << std::endl;
   std::cout << "Node speed: " << nodeSpeed << " m/s" << std::endl;
   std::cout << "Packet size: " << packetSize << " b" << std::endl;
   std::cout << "Transmission distance: " << txpDistance << " m" << std::endl;
@@ -109,6 +112,7 @@ int main (int argc, char *argv[]) {
   std::cout << "Queue length: " << queueLength << " packets" << std::endl;
   std::cout << "Queue entry expire time: " << queueEntryExpireTime.GetSeconds () << " s" << std::endl;
   std::cout << "Beacon interval: " << beaconInterval.GetSeconds () << " s" << std::endl;
+  std::cout << "Total simulated time: " << TotalTime << " s" << std::endl;
 
   // Enabling OnOffApplication and PacketSink logging
   if (appLogging) {
