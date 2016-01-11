@@ -1,0 +1,1 @@
+./waf --run "scratch/rss-epidemic-benchmark --nWifis=5 --nSrcSnk=2 --TotalTime=1000.0 --txpDistance=100.0 --hopCount=10 --queueLength=2000 --RngRun=1"
