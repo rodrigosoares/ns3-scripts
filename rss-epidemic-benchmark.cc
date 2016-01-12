@@ -57,8 +57,8 @@ in the paper Mohammed Alenazi, Yufei Cheng, Dongsheng Zhang, and James Sterbenz,
 
 int main (int argc, char *argv[]) {
   // General parameters
-  uint32_t nWifis = 15;
-  uint32_t nSrcSnk = 10;
+  uint32_t nWifis = 10;
+  uint32_t nSrcSnk = 5;
   NodeContainer nodeContainer;
   NetDeviceContainer devices;
   double txpDistance = 100.0;
@@ -66,7 +66,7 @@ int main (int argc, char *argv[]) {
   bool appLogging = true;
 
   // Application parameters
-  double TotalTime = 3600.0;
+  double TotalTime = 3000.0;
   double dataStart = 10.0;
   double dataEnd = 14.0;
   uint32_t packetSize = 1024;

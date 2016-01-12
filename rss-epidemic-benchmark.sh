@@ -25,7 +25,7 @@ if [ $(basename "$PWD") == "scratch" ]; then
       gzip rss-benchmark-range-100-hops-$hops-buffer-2000-run-$current_run.trace
     done
 
-    for buffer in 20 100 200; do
+    for buffer in 5 10 20; do
       ./waf --run "scratch/rss-epidemic-benchmark --txpDistance=100.0 --hopCount=10 --queueLength=$buffer --RngRun=$current_run"
       gzip rss-benchmark-range-100-hops-10-buffer-$buffer-run-$current_run.trace
     done
