@@ -66,7 +66,7 @@ int main (int argc, char *argv[]) {
   bool appLogging = true;
 
   // Application parameters
-  double TotalTime = 3000.0;
+  double TotalTime = 3600.0;
   double dataStart = 10.0;
   double dataEnd = 14.0;
   uint32_t packetSize = 1024;
@@ -202,7 +202,7 @@ int main (int argc, char *argv[]) {
   uint32_t run = RngSeedManager::GetRun();
   std::string fileName;
   std::stringstream sstm;
-  sstm << "rss-benchmark-run-" << run << ".trace";
+  sstm << "rss-benchmark-range-" << txpDistance << "-hops-" << hopCount << "-buffer-" << queueLength << "-run-" << run << ".trace";
   fileName = sstm.str();
   AsciiTraceHelper ascii;
   wifiPhy.EnableAsciiAll(ascii.CreateFileStream(fileName));
