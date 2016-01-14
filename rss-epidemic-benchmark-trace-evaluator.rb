@@ -4,13 +4,6 @@
 # containing the keyword "Payload", which indicates an Epidemic transmission.
 # This script was implemented using Ruby in version 2.2.1.
 
-class Node < Struct.new(:ip)
-  def initialize(ip)
-    ip = ip
-    super
-  end
-end
-
 class Packet < Struct.new(:id, :src_ip, :dst_ip, :delivered_at)
   def initialize(id, src, dst, delivered_at = '')
     id = id
@@ -65,9 +58,7 @@ class TraceEvaluator
   def extract_info_from(trace_line)
     trace_info = trace_line.match TRACE_INFO_REGEX
     packet = Packet.new trace_info[:packet_id], trace_info[:src_ip], trace_info[:dst_ip]
-    node = Node.new trace_info[:src_ip]
     update_packet_list_with packet, trace_info[:dst], trace_info[:timestamp]
-    @nodes << node unless @nodes.include?(node)
   end
 
   def update_packet_list_with(packet, dst_mac, timestamp)
@@ -95,8 +86,6 @@ class TraceEvaluator
   def show_infos
     @packets.each { |p| puts p.to_s }
     puts "Number of packets: #{@packets.size}"
-    @nodes.each { |n| puts n.to_s }
-    puts "Number of source nodes: #{@nodes.size}"
   end
 end
 
