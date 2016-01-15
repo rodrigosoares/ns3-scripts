@@ -7,7 +7,7 @@
 class TraceEvaluator
   require 'csv'
 
-  TRACE_INFO_REGEX = /r\s(?<timestamp>\d+.?\d*).*DA=00:00:00:00:00:(?<dst>\w\w),\sSA=00:00:00:00:00:(?<src>\w\w).*1068\s(?<src_ip>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\s>\s(?<dst_ip>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}).*Packet\sID:\s(?<packet_id>\d{8})\sHop\scount:\s(?<hop_count>\d{1,2})/
+  TRACE_INFO_REGEX = /r\s(?<timestamp>\d+.?\d*).*DA=00:00:00:00:00:(?<dst_mac>\w\w).*1068\s(?<src_ip>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\s>\s(?<dst_ip>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}).*Packet\sID:\s(?<packet_id>\d{8})/
   LAST_OCTET_REGEX = /.*\.(?<last_octet>\d{1,3})/
 
   Packet = Struct.new :id, :src_ip, :dst_ip, :delivered_at
@@ -52,7 +52,7 @@ class TraceEvaluator
   def extract_info_from(trace_line)
     trace_info = trace_line.match TRACE_INFO_REGEX
     packet = Packet.new trace_info[:packet_id], trace_info[:src_ip], trace_info[:dst_ip]
-    update_packet_list_with packet, trace_info[:dst], trace_info[:timestamp]
+    update_packet_list_with packet, trace_info[:dst_mac], trace_info[:timestamp]
   end
 
   def update_packet_list_with(packet, dst_mac, timestamp)
