@@ -5,6 +5,8 @@
 # This script was implemented in Ruby version 2.2.1.
 
 class TraceEvaluator
+  require 'csv'
+
   TRACE_INFO_REGEX = /r\s(?<timestamp>\d+.?\d*).*DA=00:00:00:00:00:(?<dst>\w\w),\sSA=00:00:00:00:00:(?<src>\w\w).*1068\s(?<src_ip>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\s>\s(?<dst_ip>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}).*Packet\sID:\s(?<packet_id>\d{8})\sHop\scount:\s(?<hop_count>\d{1,2})/
   LAST_OCTET_REGEX = /.*\.(?<last_octet>\d{1,3})/
 
@@ -12,7 +14,6 @@ class TraceEvaluator
 
   def initialize(path)
     @path = path
-    @nodes = []
     @packets = []
   end
 
@@ -21,7 +22,8 @@ class TraceEvaluator
       puts 'ERROR: No trace file was specified.'
     else
       check_file @path
-      show_infos
+      show_infos @path
+      export_csv @path
     end
   end
 
@@ -75,9 +77,19 @@ class TraceEvaluator
     end
   end
 
-  def show_infos
+  def export_csv(path)
+    headers = ['packet_id', 'delivered_at']
+    csv_object = CSV.generate(write_headers: true, headers: headers) do |csv|
+      @packets.each { |packet| csv << [packet.id, packet.delivered_at] }
+    end
+    File.write "#{path}.csv", csv_object
+  end
+
+  def show_infos(path)
+    puts "File #{path}"
     @packets.each { |p| puts p.to_s }
     puts "Number of packets: #{@packets.size}"
+    puts "Exporting CSV to #{path}.csv"
   end
 end
 
