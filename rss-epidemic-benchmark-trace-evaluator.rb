@@ -2,21 +2,13 @@
 # the function EnableAsciiAll of a YansWifiPhyHelper object. It reads the trace
 # file and looks for lines of interest starting with "r" (receive) and
 # containing the keyword "Payload", which indicates an Epidemic transmission.
-# This script was implemented using Ruby in version 2.2.1.
-
-class Packet < Struct.new(:id, :src_ip, :dst_ip, :delivered_at)
-  def initialize(id, src, dst, delivered_at = '')
-    id = id
-    src_ip = src_ip
-    dst_ip = dst_ip
-    delivered_at = delivered_at
-    super
-  end
-end
+# This script was implemented in Ruby version 2.2.1.
 
 class TraceEvaluator
   TRACE_INFO_REGEX = /r\s(?<timestamp>\d+.?\d*).*DA=00:00:00:00:00:(?<dst>\w\w),\sSA=00:00:00:00:00:(?<src>\w\w).*1068\s(?<src_ip>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\s>\s(?<dst_ip>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}).*Packet\sID:\s(?<packet_id>\d{8})\sHop\scount:\s(?<hop_count>\d{1,2})/
   LAST_OCTET_REGEX = /.*\.(?<last_octet>\d{1,3})/
+
+  Packet = Struct.new :id, :src_ip, :dst_ip, :delivered_at
 
   def initialize(path)
     @path = path
@@ -78,7 +70,7 @@ class TraceEvaluator
   end
 
   def update_packet_delivering_time(index, delivered_at)
-    if @packets[index].delivered_at.empty? && !delivered_at.empty?
+    if @packets[index].delivered_at.nil? && !delivered_at.nil?
       @packets[index].delivered_at = delivered_at
     end
   end
