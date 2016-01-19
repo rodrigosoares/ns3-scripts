@@ -15,17 +15,17 @@ if [ $(basename "$PWD") == "scratch" ]; then
   ./waf
 
   for current_run in $(seq 1 $max_runs); do
-    for range in 10 50 100; do
+    for range in 10 25 50 100; do
       ./waf --run "scratch/rss-epidemic-benchmark --txpDistance=$range.0 --hopCount=10 --queueLength=2000 --RngRun=$current_run"
       gzip rss-benchmark-range-$range-hops-10-buffer-2000-run-$current_run.trace
     done
 
-    for hops in 2 4 8; do
+    for hops in 1 2 3 4 5 8; do
       ./waf --run "scratch/rss-epidemic-benchmark --txpDistance=100.0 --hopCount=$hops --queueLength=2000 --RngRun=$current_run"
       gzip rss-benchmark-range-100-hops-$hops-buffer-2000-run-$current_run.trace
     done
 
-    for buffer in 5 10 20; do
+    for buffer in 5 10 20 30 60; do
       ./waf --run "scratch/rss-epidemic-benchmark --txpDistance=100.0 --hopCount=10 --queueLength=$buffer --RngRun=$current_run"
       gzip rss-benchmark-range-100-hops-10-buffer-$buffer-run-$current_run.trace
     done
