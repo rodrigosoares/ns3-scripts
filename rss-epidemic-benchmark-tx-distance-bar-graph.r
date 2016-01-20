@@ -36,14 +36,17 @@ df <- data.frame(
 
 range25mean <- 0
 range25rate <- 0
+range25mean_error <- 0
 
 for (i in 2:ncol(df)) {
   range25mean <- range25mean + mean(df[,i], na.rm = TRUE)
   range25rate <- range25rate + (1 - (sum(is.na(df[,2])) / nrow(df)))
+  range25mean_error <- range25mean_error + sd(df[,i], na.rm = TRUE) / sqrt(nrow(df))
 }
 
 range25mean <- range25mean / (ncol(df) - 1)
 range25rate <- range25rate / (ncol(df) - 1)
+range25mean_error <- range25mean_error / (ncol(df) - 1)
 
 range50run1 <- read.csv("~/Apps/NS3/traces/epidemic/tx_distance/rss-benchmark-range-50-hops-10-buffer-2000-run-1.trace.csv")
 range50run2 <- read.csv("~/Apps/NS3/traces/epidemic/tx_distance/rss-benchmark-range-50-hops-10-buffer-2000-run-2.trace.csv")
@@ -83,14 +86,17 @@ df <- data.frame(
 
 range50mean <- 0
 range50rate <- 0
+range50mean_error <- 0
 
 for (i in 2:ncol(df)) {
   range50mean <- range50mean + mean(df[,i], na.rm = TRUE)
   range50rate <- range50rate + (1 - (sum(is.na(df[,2])) / nrow(df)))
+  range50mean_error <- range50mean_error + sd(df[,i], na.rm = TRUE) / sqrt(nrow(df))
 }
 
 range50mean <- range50mean / (ncol(df) - 1)
 range50rate <- range50rate / (ncol(df) - 1)
+range50mean_error <- range50mean_error / (ncol(df) - 1)
 
 range100run1 <- read.csv("~/Apps/NS3/traces/epidemic/tx_distance/rss-benchmark-range-100-hops-10-buffer-2000-run-1.trace.csv")
 range100run2 <- read.csv("~/Apps/NS3/traces/epidemic/tx_distance/rss-benchmark-range-100-hops-10-buffer-2000-run-2.trace.csv")
@@ -130,24 +136,29 @@ df <- data.frame(
 
 range100mean <- 0
 range100rate <- 0
+range100mean_error <- 0
 
 for (i in 2:ncol(df)) {
   range100mean <- range100mean + mean(df[,i], na.rm = TRUE)
   range100rate <- range100rate + (1 - (sum(is.na(df[,2])) / nrow(df)))
+  range100mean_error <- range100mean_error + sd(df[,i], na.rm = TRUE) / sqrt(nrow(df))
 }
 
 range100mean <- range100mean / (ncol(df) - 1)
 range100rate <- range100rate / (ncol(df) - 1)
+range100mean_error <- range100mean_error / (ncol(df) - 1)
 
 df_latency <- data.frame(
   tx_range = c('25 metros', '50 metros', '100 metros'),
-  latency = c(range25mean, range50mean, range100mean)
+  latency = c(range25mean, range50mean, range100mean),
+  std_err = c(range25mean_error, range50mean_error, range100mean_error)
 )
 
 df_latency$tx_range <- factor(df_latency$tx_range, levels = c('25 metros', '50 metros', '100 metros'))
 
 range_latency_graph <- ggplot(data = df_latency, aes(x = tx_range, y = latency, fill = tx_range)) +
   geom_bar(stat = "identity") +
+  geom_errorbar(aes(ymin = latency - std_err, ymax = latency + std_err), width = .2) +
   guides(fill = FALSE) +
   xlab("Alcance de transmissão") +
   ylab("Tempo de entrega (s)") +

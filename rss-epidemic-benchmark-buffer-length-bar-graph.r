@@ -36,14 +36,17 @@ df <- data.frame(
 
 buffer20mean <- 0
 buffer20rate <- 0
+buffer20mean_error <- 0
 
 for (i in 2:ncol(df)) {
   buffer20mean <- buffer20mean + mean(df[,i], na.rm = TRUE)
   buffer20rate <- buffer20rate + (1 - (sum(is.na(df[,2])) / nrow(df)))
+  buffer20mean_error <- buffer20mean_error + sd(df[,i], na.rm = TRUE) / sqrt(nrow(df))
 }
 
 buffer20mean <- buffer20mean / (ncol(df) - 1)
 buffer20rate <- buffer20rate / (ncol(df) - 1)
+buffer20mean_error <- buffer20mean_error / (ncol(df) - 1)
 
 buffer30run1 <- read.csv("~/Apps/NS3/traces/epidemic/buffer_length/rss-benchmark-range-100-hops-10-buffer-30-run-1.trace.csv")
 buffer30run2 <- read.csv("~/Apps/NS3/traces/epidemic/buffer_length/rss-benchmark-range-100-hops-10-buffer-30-run-2.trace.csv")
@@ -83,14 +86,17 @@ df <- data.frame(
 
 buffer30mean <- 0
 buffer30rate <- 0
+buffer30mean_error <- 0
 
 for (i in 2:ncol(df)) {
   buffer30mean <- buffer30mean + mean(df[,i], na.rm = TRUE)
   buffer30rate <- buffer30rate + (1 - (sum(is.na(df[,2])) / nrow(df)))
+  buffer30mean_error <- buffer30mean_error + sd(df[,i], na.rm = TRUE) / sqrt(nrow(df))
 }
 
 buffer30mean <- buffer30mean / (ncol(df) - 1)
 buffer30rate <- buffer30rate / (ncol(df) - 1)
+buffer30mean_error <- buffer30mean_error / (ncol(df) - 1)
 
 buffer60run1 <- read.csv("~/Apps/NS3/traces/epidemic/buffer_length/rss-benchmark-range-100-hops-10-buffer-60-run-1.trace.csv")
 buffer60run2 <- read.csv("~/Apps/NS3/traces/epidemic/buffer_length/rss-benchmark-range-100-hops-10-buffer-60-run-2.trace.csv")
@@ -130,22 +136,27 @@ df <- data.frame(
 
 buffer60mean <- 0
 buffer60rate <- 0
+buffer60mean_error <- 0
 
 for (i in 2:ncol(df)) {
   buffer60mean <- buffer60mean + mean(df[,i], na.rm = TRUE)
   buffer60rate <- buffer60rate + (1 - (sum(is.na(df[,2])) / nrow(df)))
+  buffer60mean_error <- buffer60mean_error + sd(df[,i], na.rm = TRUE) / sqrt(nrow(df))
 }
 
 buffer60mean <- buffer60mean / (ncol(df) - 1)
 buffer60rate <- buffer60rate / (ncol(df) - 1)
+buffer60mean_error <- buffer60mean_error / (ncol(df) - 1)
 
 df_latency <- data.frame(
   buffer_size = c('20 pacotes', '30 pacotes', '60 pacotes'),
-  latency = c(buffer20mean, buffer30mean, buffer60mean)
+  latency = c(buffer20mean, buffer30mean, buffer60mean),
+  std_err = c(buffer20mean_error, buffer30mean_error, buffer60mean_error)
 )
 
 buffer_latency_graph <- ggplot(data = df_latency, aes(x = buffer_size, y = latency, fill = buffer_size)) +
   geom_bar(stat = "identity") +
+  geom_errorbar(aes(ymin = latency - std_err, ymax = latency + std_err), width = .2) +
   guides(fill = FALSE) +
   xlab("Tamanho do buffer") +
   ylab("Tempo de entrega (s)")

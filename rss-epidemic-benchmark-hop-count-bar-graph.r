@@ -36,14 +36,17 @@ df <- data.frame(
 
 hops1mean <- 0
 hops1rate <- 0
+hops1mean_error <- 0
 
 for (i in 2:ncol(df)) {
   hops1mean <- hops1mean + mean(df[,i], na.rm = TRUE)
   hops1rate <- hops1rate + (1 - (sum(is.na(df[,2])) / nrow(df)))
+  hops1mean_error <- hops1mean_error + sd(df[,i], na.rm = TRUE) / sqrt(nrow(df))
 }
 
 hops1mean <- hops1mean / (ncol(df) - 1)
 hops1rate <- hops1rate / (ncol(df) - 1)
+hops1mean_error <- hops1mean_error / (ncol(df) - 1)
 
 hops2run1 <- read.csv("~/Apps/NS3/traces/epidemic/hop_count/rss-benchmark-range-100-hops-2-buffer-2000-run-1.trace.csv")
 hops2run2 <- read.csv("~/Apps/NS3/traces/epidemic/hop_count/rss-benchmark-range-100-hops-2-buffer-2000-run-2.trace.csv")
@@ -83,14 +86,17 @@ df <- data.frame(
 
 hops2mean <- 0
 hops2rate <- 0
+hops2mean_error <- 0
 
 for (i in 2:ncol(df)) {
   hops2mean <- hops2mean + mean(df[,i], na.rm = TRUE)
   hops2rate <- hops2rate + (1 - (sum(is.na(df[,2])) / nrow(df)))
+  hops2mean_error <- hops2mean_error + sd(df[,i], na.rm = TRUE) / sqrt(nrow(df))
 }
 
 hops2mean <- hops2mean / (ncol(df) - 1)
 hops2rate <- hops2rate / (ncol(df) - 1)
+hops2mean_error <- hops2mean_error / (ncol(df) - 1)
 
 hops3run1 <- read.csv("~/Apps/NS3/traces/epidemic/hop_count/rss-benchmark-range-100-hops-3-buffer-2000-run-1.trace.csv")
 hops3run2 <- read.csv("~/Apps/NS3/traces/epidemic/hop_count/rss-benchmark-range-100-hops-3-buffer-2000-run-2.trace.csv")
@@ -130,14 +136,17 @@ df <- data.frame(
 
 hops3mean <- 0
 hops3rate <- 0
+hops3mean_error <- 0
 
 for (i in 2:ncol(df)) {
   hops3mean <- hops3mean + mean(df[,i], na.rm = TRUE)
   hops3rate <- hops3rate + (1 - (sum(is.na(df[,2])) / nrow(df)))
+  hops3mean_error <- hops3mean_error + sd(df[,i], na.rm = TRUE) / sqrt(nrow(df))
 }
 
 hops3mean <- hops3mean / (ncol(df) - 1)
 hops3rate <- hops3rate / (ncol(df) - 1)
+hops3mean_error <- hops3mean_error / (ncol(df) - 1)
 
 hops5run1 <- read.csv("~/Apps/NS3/traces/epidemic/hop_count/rss-benchmark-range-100-hops-5-buffer-2000-run-1.trace.csv")
 hops5run2 <- read.csv("~/Apps/NS3/traces/epidemic/hop_count/rss-benchmark-range-100-hops-5-buffer-2000-run-2.trace.csv")
@@ -177,14 +186,17 @@ df <- data.frame(
 
 hops5mean <- 0
 hops5rate <- 0
+hops5mean_error <- 0
 
 for (i in 2:ncol(df)) {
   hops5mean <- hops5mean + mean(df[,i], na.rm = TRUE)
   hops5rate <- hops5rate + (1 - (sum(is.na(df[,2])) / nrow(df)))
+  hops5mean_error <- hops5mean_error + sd(df[,i], na.rm = TRUE) / sqrt(nrow(df))
 }
 
 hops5mean <- hops5mean / (ncol(df) - 1)
 hops5rate <- hops5rate / (ncol(df) - 1)
+hops5mean_error <- hops5mean_error / (ncol(df) - 1)
 
 hops8run1 <- read.csv("~/Apps/NS3/traces/epidemic/hop_count/rss-benchmark-range-100-hops-8-buffer-2000-run-1.trace.csv")
 hops8run2 <- read.csv("~/Apps/NS3/traces/epidemic/hop_count/rss-benchmark-range-100-hops-8-buffer-2000-run-2.trace.csv")
@@ -224,22 +236,27 @@ df <- data.frame(
 
 hops8mean <- 0
 hops8rate <- 0
+hops8mean_error <- 0
 
 for (i in 2:ncol(df)) {
   hops8mean <- hops8mean + mean(df[,i], na.rm = TRUE)
   hops8rate <- hops8rate + (1 - (sum(is.na(df[,2])) / nrow(df)))
+  hops8mean_error <- hops8mean_error + sd(df[,i], na.rm = TRUE) / sqrt(nrow(df))
 }
 
 hops8mean <- hops8mean / (ncol(df) - 1)
 hops8rate <- hops8rate / (ncol(df) - 1)
+hops8mean_error <- hops8mean_error / (ncol(df) - 1)
 
 df_latency <- data.frame(
   hop_count = c('1 salto', '2 saltos', '3 saltos', '5 saltos', '8 saltos'),
-  latency = c(hops1mean, hops2mean, hops3mean, hops5mean, hops8mean)
+  latency = c(hops1mean, hops2mean, hops3mean, hops5mean, hops8mean),
+  std_err = c(hops1mean_error, hops2mean_error, hops3mean_error, hops5mean_error, hops8mean_error)
 )
 
 hops_latency_graph <- ggplot(data = df_latency, aes(x = hop_count, y = latency, fill = hop_count)) +
   geom_bar(stat = "identity") +
+  geom_errorbar(aes(ymin = latency - std_err, ymax = latency + std_err), width = .2) +
   guides(fill = FALSE) +
   xlab("Número de saltos") +
   ylab("Tempo de entrega (s)") +
