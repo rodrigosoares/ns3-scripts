@@ -1,3 +1,5 @@
+library(ggplot2)
+
 hops1run1 <- read.csv("~/Apps/NS3/traces/epidemic/hop_count/rss-benchmark-range-100-hops-1-buffer-2000-run-1.trace.csv")
 hops1run2 <- read.csv("~/Apps/NS3/traces/epidemic/hop_count/rss-benchmark-range-100-hops-1-buffer-2000-run-2.trace.csv")
 hops1run3 <- read.csv("~/Apps/NS3/traces/epidemic/hop_count/rss-benchmark-range-100-hops-1-buffer-2000-run-3.trace.csv")

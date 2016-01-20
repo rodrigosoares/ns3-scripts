@@ -1,3 +1,5 @@
+library(ggplot2)
+
 buffer20run1 <- read.csv("~/Apps/NS3/traces/epidemic/buffer_length/rss-benchmark-range-100-hops-10-buffer-20-run-1.trace.csv")
 buffer20run2 <- read.csv("~/Apps/NS3/traces/epidemic/buffer_length/rss-benchmark-range-100-hops-10-buffer-20-run-2.trace.csv")
 buffer20run3 <- read.csv("~/Apps/NS3/traces/epidemic/buffer_length/rss-benchmark-range-100-hops-10-buffer-20-run-3.trace.csv")
